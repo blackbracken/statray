@@ -10,49 +10,61 @@ import (
 	"golang.org/x/image/font/gofont/gobold"
 	"golang.org/x/image/math/fixed"
 	"image"
+	"image/color"
 	"image/png"
 	"os"
+	"strconv"
 	"time"
 )
 
 func main() {
-	fmt.Println("Hello, World!")
-
 	gtk.Init(&os.Args)
+	statusIcon := gtk.NewStatusIcon()
+	statusIcon.SetTitle("This is a title")
+	statusIcon.SetVisible(true)
 
-	window := gtk.NewWindow(gtk.WINDOW_TOPLEVEL)
-	window.SetTitle("Hello Go-GTK")
-	window.Connect("destroy", gtk.MainQuit)
-
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(2 * time.Second)
 
 	go func() {
 		for {
 			select {
-			case tick := <-ticker.C:
-				fmt.Println("Tick at", tick)
+			case _ = <-ticker.C:
 				batteries, err := battery.GetAll()
 				if err != nil {
 					fmt.Fprintln(os.Stderr, err)
 					os.Exit(1)
 				}
 
-				for i, bat := range batteries {
-					fmt.Println(i)
-					window.SetTitle(fmt.Sprint(bat.State))
+				if len(batteries) == 0 {
+					os.Exit(1)
 				}
+				bat := batteries[0]
+				println(bat.String())
+
+				filename := "/var/tmp/statray_icon.png"
+				percentage := int(bat.Current / bat.Full * 100)
+				println(percentage)
+				err = genIconImage(filename, strconv.Itoa(percentage), color.RGBA{R: 255, G: 255, B: 255, A: 255})
+				if err != nil {
+					os.Exit(1)
+				}
+
+				statusIcon.SetFromFile(filename)
 			}
 		}
 	}()
 
+	gtk.Main()
+}
+
+func genIconImage(filename, text string, color color.RGBA) error {
 	ft, err := truetype.Parse(gobold.TTF)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return err
 	}
 
 	opt := truetype.Options{
-		Size:              90,
+		Size:              110,
 		DPI:               0,
 		Hinting:           0,
 		GlyphCacheEntries: 0,
@@ -60,10 +72,9 @@ func main() {
 		SubPixelsY:        0,
 	}
 
-	imageWidth := 100
-	imageHeight := 100
-	textTopMargin := 90
-	text := "A"
+	imageWidth := 128
+	imageHeight := 128
+	textTopMargin := 105
 
 	img := image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
 
@@ -71,7 +82,7 @@ func main() {
 
 	dr := &font.Drawer{
 		Dst:  img,
-		Src:  image.Black,
+		Src:  image.NewUniform(color),
 		Face: face,
 		Dot:  fixed.Point26_6{},
 	}
@@ -83,27 +94,17 @@ func main() {
 
 	buf := &bytes.Buffer{}
 	err = png.Encode(buf, img)
-
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return err
 	}
 
-	file, err := os.Create(`test.png`)
+	file, err := os.Create(filename)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return err
 	}
 	defer file.Close()
 
 	file.Write(buf.Bytes())
 
-	statusIcon := gtk.NewStatusIconFromFile(`test.png`)
-	statusIcon.SetTitle("This is a title")
-	statusIcon.SetVisible(true)
-
-	window.ShowAll()
-	window.SetSizeRequest(400, 250)
-
-	gtk.Main()
+	return nil
 }
