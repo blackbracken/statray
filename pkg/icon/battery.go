@@ -2,9 +2,11 @@ package icon
 
 import (
 	"errors"
+	"fmt"
 	"github.com/distatus/battery"
 	"github.com/mattn/go-gtk/gtk"
 	"image/color"
+	"math"
 	"strconv"
 )
 
@@ -27,7 +29,7 @@ func (icon *batteryIcon) Update() error {
 		return err
 	}
 
-	percentage := int(bat.Current / bat.Full * 100)
+	percentage := int(math.Round(bat.Current / bat.Full * 100))
 	onFullCharge := percentage >= 100
 
 	var iconText string
@@ -62,6 +64,10 @@ func (icon *batteryIcon) Update() error {
 	}
 	icon.GtkIcon.SetFromFile(batteryIconPath)
 
+	println(bat.String())
+
+	icon.GtkIcon.SetTooltipText(
+		fmt.Sprintf("Capacity: %d%% ( %.1f / %.1f [Wh] )", percentage, bat.Current/1000.0, bat.Full/1000.0))
 	icon.GtkIcon.SetVisible(true)
 
 	return nil
