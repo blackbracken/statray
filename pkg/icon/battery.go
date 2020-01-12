@@ -39,9 +39,12 @@ func (icon *batteryIcon) Update() error {
 		iconText = strconv.Itoa(percentage)
 	}
 
+	println(bat.String())
+
 	var iconColor color.RGBA
 	switch {
 	case onFullCharge:
+		fallthrough
 	case bat.State == battery.Charging:
 		iconColor = color.RGBA{R: 242, G: 211, B: 36, A: 255}
 	case percentage >= 80:
@@ -63,8 +66,6 @@ func (icon *batteryIcon) Update() error {
 		return err
 	}
 	icon.GtkIcon.SetFromFile(batteryIconPath)
-
-	println(bat.String())
 
 	icon.GtkIcon.SetTooltipText(
 		fmt.Sprintf("Capacity: %d%% ( %.1f / %.1f [Wh] )", percentage, bat.Current/1000.0, bat.Full/1000.0))

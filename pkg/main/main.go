@@ -11,16 +11,25 @@ import (
 func main() {
 	gtk.Init(&os.Args)
 
+	cpuIcon, err := icon.NewCpuIcon()
+	if err != nil {
+		println(err)
+		os.Exit(1)
+	}
+
 	animateIcons := []icon.AnimateIcon{
 		icon.NewBatteryIcon(),
+		cpuIcon,
 	}
 	updateIcons(animateIcons)
 
-	ticker := time.NewTicker(2 * time.Second)
 	go func() {
+		ticker := time.NewTicker(5 * time.Second)
+		defer ticker.Stop()
+
 		for {
 			select {
-			case _ = <-ticker.C:
+			case <-ticker.C:
 				updateIcons(animateIcons)
 			}
 		}

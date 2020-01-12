@@ -2,12 +2,31 @@
 
 
 [[projects]]
+  digest = "1:9909e0a06cff3bd88841c9d2e0cc91b0a431676009018c74c3315f33b49b0046"
+  name = "github.com/StackExchange/wmi"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "cbe66965904dbe8a6cd589e2298e5d8b986bd7dd"
+  version = "1.1.0"
+
+[[projects]]
   digest = "1:ffcd21c81dfcfe0f374b6e28326e4297dd3e30100759f46b370de365a9933e62"
   name = "github.com/distatus/battery"
   packages = ["."]
   pruneopts = "UT"
   revision = "aa540e5be8de3bd83449b7a099341109e9ac1153"
   version = "v0.10.0"
+
+[[projects]]
+  digest = "1:440028f55cb322d8cb5b9d5ebec298a00b7d74690a658fe6b1c0c0b44341bfae"
+  name = "github.com/go-ole/go-ole"
+  packages = [
+    ".",
+    "oleutil",
+  ]
+  pruneopts = "UT"
+  revision = "97b6244175ae18ea6eef668034fd6565847501c9"
+  version = "v1.2.4"
 
 [[projects]]
   branch = "master"
@@ -42,6 +61,17 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "a0a44394634f41e4992b173b24f14fecd3318a67"
+
+[[projects]]
+  digest = "1:c8b8c69fc2ff150931cf78931b67e3f69d3bc81cd457ff97af08e4f29d2733d0"
+  name = "github.com/shirou/gopsutil"
+  packages = [
+    "cpu",
+    "internal/common",
+  ]
+  pruneopts = "UT"
+  revision = "c0410b92ca5e440fba10e069c9a4aac3f64d3fc6"
+  version = "v2.19.12"
 
 [[projects]]
   branch = "master"
@@ -81,6 +111,7 @@
     "github.com/distatus/battery",
     "github.com/golang/freetype/truetype",
     "github.com/mattn/go-gtk/gtk",
+    "github.com/shirou/gopsutil/cpu",
     "golang.org/x/image/font",
     "golang.org/x/image/font/gofont/gobold",
     "golang.org/x/image/math/fixed",

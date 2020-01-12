@@ -8,6 +8,7 @@ import (
 	"golang.org/x/image/math/fixed"
 	"image"
 	"image/color"
+	"image/draw"
 	"image/png"
 	"os"
 )
@@ -18,6 +19,11 @@ type AnimateIcon interface {
 
 type TextIconImage struct {
 	Text  *string
+	Color *color.RGBA
+}
+
+type RectangleIconImage struct {
+	Rect  image.Rectangle
 	Color *color.RGBA
 }
 
@@ -56,22 +62,50 @@ func genTextIconImage(textIcon TextIconImage, fileName string) error {
 
 	dr.DrawString(*textIcon.Text)
 
-	buf := &bytes.Buffer{}
-	err = png.Encode(buf, img)
+	err = flushRGBA(fileName, img)
 	if err != nil {
 		return err
 	}
 
+	return nil
+}
+
+func genRectangleIconImage(rectangleIcon RectangleIconImage, fileName string) error {
+	imageWidth := 100
+	imageHeight := 100
+
+	img := image.NewRGBA(image.Rect(0, 0, imageWidth, imageHeight))
+
+	draw.Draw(
+		img,
+		rectangleIcon.Rect,
+		image.NewUniform(rectangleIcon.Color),
+		image.Point{},
+		draw.Src,
+	)
+
+	err := flushRGBA(fileName, img)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func flushRGBA(fileName string, rgba *image.RGBA) error {
 	file, err := os.Create(fileName)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	_, err = file.Write(buf.Bytes())
+	buf := &bytes.Buffer{}
+	err = png.Encode(buf, rgba)
 	if err != nil {
 		return err
 	}
+
+	_, err = file.Write(buf.Bytes())
 
 	return nil
 }
