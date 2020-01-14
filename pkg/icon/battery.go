@@ -46,13 +46,13 @@ func (icon *batteryIcon) Update() error {
 	case onFullCharge:
 		fallthrough
 	case bat.State == battery.Charging:
-		iconColor = color.RGBA{R: 242, G: 211, B: 36, A: 255}
+		iconColor = colorYellow
 	case percentage >= 80:
-		iconColor = color.RGBA{R: 73, G: 204, B: 130, A: 255}
+		iconColor = colorGreen
 	case percentage <= 20:
-		iconColor = color.RGBA{R: 227, G: 78, B: 73, A: 255}
+		iconColor = colorRed
 	default:
-		iconColor = color.RGBA{R: 255, G: 255, B: 255, A: 255}
+		iconColor = colorWhite
 	}
 
 	err = genTextIconImage(

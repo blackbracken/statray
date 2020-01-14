@@ -41,14 +41,23 @@ func (icon *cpuIcon) Update() error {
 
 	for iconIdx, gtkIcon := range icon.GtkIcons {
 		fileName := fmt.Sprintf(cpuIconPath, iconIdx)
+		percentage := percents[iconIdx]
+
+		var clr color.RGBA
+		switch {
+		case percentage >= 90:
+			clr = colorRed
+		default:
+			clr = colorWhite
+		}
 
 		err := genRectangleIconImage(
 			RectangleIconImage{
 				Rect: image.Rectangle{
-					Min: image.Point{X: 15, Y: 85 - (int(percents[iconIdx] * 70 / 100))},
+					Min: image.Point{X: 15, Y: 85 - (int(percentage * 70 / 100))},
 					Max: image.Point{X: 85, Y: 85},
 				},
-				Color: &color.RGBA{R: 255, G: 255, B: 255, A: 255},
+				Color: &clr,
 			},
 			fileName,
 		)
