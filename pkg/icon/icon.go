@@ -13,10 +13,12 @@ import (
 	"os"
 )
 
-var colorRed = color.RGBA{R: 227, G: 78, B: 73, A: 255}
-var colorYellow = color.RGBA{R: 242, G: 211, B: 36, A: 255}
-var colorGreen = color.RGBA{R: 73, G: 204, B: 130, A: 255}
-var colorWhite = color.RGBA{R: 255, G: 255, B: 255, A: 255}
+var (
+	colorRed    = color.RGBA{R: 227, G: 78, B: 73, A: 255}
+	colorYellow = color.RGBA{R: 242, G: 211, B: 36, A: 255}
+	colorGreen  = color.RGBA{R: 73, G: 204, B: 130, A: 255}
+	colorWhite  = color.RGBA{R: 255, G: 255, B: 255, A: 255}
+)
 
 type AnimateIcon interface {
 	Update() error
@@ -27,12 +29,7 @@ type TextIconImage struct {
 	Color *color.RGBA
 }
 
-type RectangleIconImage struct {
-	Rect  image.Rectangle
-	Color *color.RGBA
-}
-
-func genTextIconImage(textIcon TextIconImage, fileName string) error {
+func (textIcon *TextIconImage) genImageAt(fileName string) error {
 	ft, err := truetype.Parse(gobold.TTF)
 	if err != nil {
 		return err
@@ -75,7 +72,12 @@ func genTextIconImage(textIcon TextIconImage, fileName string) error {
 	return nil
 }
 
-func genRectangleIconImage(rectangleIcon RectangleIconImage, fileName string) error {
+type RectangleIconImage struct {
+	Rect  image.Rectangle
+	Color *color.RGBA
+}
+
+func (rectangleIcon *RectangleIconImage) genImageAt(fileName string) error {
 	imageWidth := 100
 	imageHeight := 100
 

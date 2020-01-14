@@ -13,7 +13,6 @@ func main() {
 
 	cpuIcon, err := icon.NewCpuIcon()
 	if err != nil {
-		println(err)
 		os.Exit(1)
 	}
 
@@ -43,7 +42,6 @@ func updateIcons(animateIcons []icon.AnimateIcon) {
 		err := animateIcon.Update()
 		if err != nil {
 			fmt.Println(err)
-			os.Exit(1)
 		}
 	}
 }

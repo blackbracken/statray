@@ -39,8 +39,6 @@ func (icon *batteryIcon) Update() error {
 		iconText = strconv.Itoa(percentage)
 	}
 
-	println(bat.String())
-
 	var iconColor color.RGBA
 	switch {
 	case onFullCharge:
@@ -55,13 +53,12 @@ func (icon *batteryIcon) Update() error {
 		iconColor = colorWhite
 	}
 
-	err = genTextIconImage(
+	textIconImg :=
 		TextIconImage{
 			Text:  &iconText,
 			Color: &iconColor,
-		},
-		batteryIconPath,
-	)
+		}
+	err = textIconImg.genImageAt(batteryIconPath)
 	if err != nil {
 		return err
 	}

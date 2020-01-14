@@ -51,16 +51,15 @@ func (icon *cpuIcon) Update() error {
 			clr = colorWhite
 		}
 
-		err := genRectangleIconImage(
+		rectangleIconImg :=
 			RectangleIconImage{
 				Rect: image.Rectangle{
 					Min: image.Point{X: 15, Y: 85 - (int(percentage * 70 / 100))},
 					Max: image.Point{X: 85, Y: 85},
 				},
 				Color: &clr,
-			},
-			fileName,
-		)
+			}
+		err = rectangleIconImg.genImageAt(fileName)
 		if err != nil {
 			return err
 		}
